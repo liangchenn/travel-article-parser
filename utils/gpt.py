@@ -1,13 +1,10 @@
-import re
 import os
-import json
-from typing import List
 
 import dotenv
 import openai
 
-from utils.cache import local_cache
 from utils.article import parse_url
+from utils.cache import local_cache
 
 # load env
 dotenv.load_dotenv()
@@ -19,18 +16,19 @@ PROMPT = """
 I will provide you a list of travel locations separated by comma `,`
 Your tasks is to tell me which locations are mentioned and remove non location words.
 
-The answer format should be a list of location names. 
+The answer format should be a list of location names.
 Please use `[]` to include those locations, and use comma `, ` to separate the locations you found.
 For example, `[Shibuya Skytree, Taipei 101, Tokyo Station]`.
-Please notice that the length of location name won't exceed 30 character, 
+Please notice that the length of location name won't exceed 30 character,
 remember to remove the invalid ones. And always remember to return locations instead of a whole sentence.
 
 The list:
 
 """
 
+
 @local_cache
-def process_url(url: str) -> List[str]:
+def process_url(url: str) -> list[str]:
     data = parse_url(url)
     all_lst = []
     for _, lst in data.items():
@@ -60,19 +58,20 @@ def split_text(text, max_tokens):
 
     return chunks
 
+
 def process_text_with_gpt(prompt, model="gpt-3.5-turbo", max_tokens=3000, max_output=400):
     max_tokens = 3000
     chunks = split_text(prompt, max_tokens - 10)
 
     results = []
     for chunk in chunks:
-        
+
         response = openai.ChatCompletion.create(
             model=model,
             max_tokens=max_output,
             temperature=0.5,
-            messages=[{"role": "user", "content": chunk}]
+            messages=[{"role": "user", "content": chunk}],
         )
-        results.append(response.choices[0]['message']['content'].strip())
+        results.append(response.choices[0]["message"]["content"].strip())
 
     return "\n".join(results)

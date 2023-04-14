@@ -1,20 +1,18 @@
-import os
-import time
-import hashlib
 import functools
-
+import hashlib
+import os
 import pickle
-import pandas as pd
+
 
 def local_cache(function):
     def hash_url(url: str) -> str:
-        return hashlib.md5(url.encode('utf-8')).hexdigest()
+        return hashlib.md5(url.encode("utf-8")).hexdigest()
 
     @functools.wraps(function)
     def wrapper(url: str, *args, **kwargs):
-        cache_dir = 'cache_data'
+        cache_dir = "cache_data"
         hash_value = hash_url(url)
-        cache_file = f'{cache_dir}/{hash_value}.parquet'
+        cache_file = f"{cache_dir}/{hash_value}.parquet"
 
         # create cache folder
         os.makedirs(cache_dir, exist_ok=True)
