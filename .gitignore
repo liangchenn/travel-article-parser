@@ -1,0 +1,8 @@
+.env
+.DS_Store
+*.txt
+
+.ipynb_checkpoints/
+cache_data/
+notebooks/
+__pycache__/
