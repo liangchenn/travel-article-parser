@@ -1,11 +1,13 @@
 import re
 import os
 import json
+from typing import List
 
 import dotenv
 import openai
 
 from utils.cache import local_cache
+from utils.article import parse_url
 
 # load env
 dotenv.load_dotenv()
@@ -26,6 +28,15 @@ remember to remove the invalid ones. And always remember to return locations ins
 The list:
 
 """
+
+@local_cache
+def process_url(url: str) -> List[str]:
+    data = parse_url(url)
+    all_lst = []
+    for _, lst in data.items():
+        all_lst.extend(lst)
+    gpt_raw_result = process_text_with_gpt(PROMPT + str(all_lst))
+    return gpt_raw_result
 
 
 def split_text(text, max_tokens):
@@ -49,7 +60,6 @@ def split_text(text, max_tokens):
 
     return chunks
 
-@local_cache
 def process_text_with_gpt(prompt, model="gpt-3.5-turbo", max_tokens=3000, max_output=400):
     max_tokens = 3000
     chunks = split_text(prompt, max_tokens - 10)
