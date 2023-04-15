@@ -10,9 +10,9 @@ def local_cache(function):
 
     @functools.wraps(function)
     def wrapper(url: str, *args, **kwargs):
-        cache_dir = "cache_data"
+        cache_dir = "cached_data"
         hash_value = hash_url(url)
-        cache_file = f"{cache_dir}/{hash_value}.parquet"
+        cache_file = f"{cache_dir}/{hash_value}.pickle"
 
         # create cache folder
         os.makedirs(cache_dir, exist_ok=True)
