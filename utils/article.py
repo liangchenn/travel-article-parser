@@ -7,8 +7,10 @@ from bs4 import BeautifulSoup
 def parse_url(url: str):
 
     data = defaultdict(list)
-
-    resp = requests.get(url)
+    try:
+        resp = requests.get(url)
+    except Exception:
+        return {}
     soup = BeautifulSoup(resp.content, "lxml")
 
     level = 1

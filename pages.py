@@ -92,7 +92,8 @@ def batch_update_page():
     uploaded_file = st.file_uploader(label="Choose the CSV file here")
 
     if not uploaded_file:
-        raise ValueError("Please Choose a Valid Filepath")
+        st.warning("Please Choose a Valid File")
+        st.stop()
 
     raw_df = pd.read_csv(uploaded_file)
 
@@ -101,24 +102,42 @@ def batch_update_page():
 
     st.markdown("#### 2. Choose URL Column")
     col = st.selectbox(label="Choose the column of URL", options=raw_df.columns)
+    st.info(
+        f"""
+    * Data Shape: {raw_df.shape}\n\n
+    * Unique URLs: {raw_df[col].nunique()}
+    """
+    )
 
     st.markdown("#### 3. Processing")
     df = raw_df.copy()
 
     execute_button = st.button(label="EXECUTE")
+
+    result_list = []
     if execute_button:
-        result_list = []
         for url in stqdm(df[col].values):
             _res = process_url(url)
             result_list.append({col: url, "POI": _res})
 
-        st.markdown("#### 4. Results")
-        if result_list:
-            result_df = pd.DataFrame(result_list)
-            st.dataframe(result_df)
-            filepath = st.text_input(label="Filename", value="parsed_results")
-            st.download_button(
-                label="DOWNLOAD RESULTS",
-                data=result_df.to_csv(index=False),
-                file_name=f"{filepath}.csv",
-            )
+    st.markdown("#### 4. Results")
+
+    filepath = st.text_input(label="Saved Filename", value="parsed_results")
+    if result_list:
+        result_df = pd.DataFrame(result_list)
+        st.info(
+            f"""
+        * Result Shape: {result_df.shape}\n\n
+        * Successfully parsed URLs: {result_df[col].nunique()} out of {df[col].nunique()}
+        """
+        )
+        st.dataframe(result_df)
+
+        st.download_button(
+            label="DOWNLOAD RESULTS",
+            data=result_df.to_csv(index=False),
+            file_name=f"{filepath}.csv",
+        )
+
+    else:
+        st.warning("Currently No Results Generated.")
