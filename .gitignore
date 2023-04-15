@@ -2,7 +2,7 @@
 .DS_Store
 
 .ipynb_checkpoints/
-cache_data/
+cached_data/
 notebooks/
 __pycache__/
 .python-version/
