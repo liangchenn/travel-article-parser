@@ -1,4 +1,4 @@
-.PHONY: print-vars build run stop rmi all
+.PHONY: print-vars build run stop rmi up down
 
 IMAGE_NAME := article-parser
 TARGET_TAG := latest
@@ -22,4 +22,6 @@ stop:
 rmi:
 	docker rmi $(IMAGE_NAME):$(TARGET_TAG)
 
-all: build run
+up: build run
+
+down: stop rmi
