@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import streamlit_analytics
 from stqdm import stqdm
 
 from utils.article import parse_url
@@ -78,6 +79,8 @@ def preview_page():
 
 def batch_update_page():
 
+    streamlit_analytics.start_tracking()
+
     st.markdown("### Batch Update Page")
     st.markdown(
         """
@@ -141,3 +144,5 @@ def batch_update_page():
 
     else:
         st.warning("Currently No Results Generated.")
+
+    streamlit_analytics.stop_tracking(save_to_json="cached_data/analytics.json")
