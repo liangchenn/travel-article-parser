@@ -8,7 +8,7 @@ def parse_url(url: str):
 
     data = defaultdict(list)
     try:
-        resp = requests.get(url)
+        resp = requests.get(url, timeout=30)
     except Exception:
         return {}
     soup = BeautifulSoup(resp.content, "lxml")
