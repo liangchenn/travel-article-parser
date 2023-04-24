@@ -121,7 +121,7 @@ def batch_update_page():
     if execute_button:
         for url in stqdm(df[col].values):
             _res = process_url(url)
-            result_list.append({col: url, "POI": _res})
+            result_list.append({col: url, "POI": str(_res).replace("[", "").replace("]", "")})
 
     st.markdown("#### 4. Results")
 
@@ -134,6 +134,8 @@ def batch_update_page():
         * Successfully parsed URLs: {result_df[col].nunique()} out of {df[col].nunique()}
         """
         )
+        # st.write(result_df["POI"].str.replace("[]", "", regex=True).head())
+        # result_df["POI"] = result_df["POI"].str.replace("[]", "", regex=True)
         st.dataframe(result_df)
 
         st.download_button(
